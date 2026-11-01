@@ -4,9 +4,11 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 
+// Firebase Admin SDK configuration
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
     ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
     : require("./config/serviceAccountKey.json");
@@ -14,12 +16,20 @@ const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
 initializeApp({
     credential: cert(serviceAccount)
 });
+
+// Create Express app BEFORE using app.use()
+const app = express();
+
+// Middleware
 app.use(cors({
     origin: [
         "http://localhost:3000",
         process.env.FRONTEND_URL
     ].filter(Boolean)
 }));
+
+app.use(express.json());
+
 // MongoDB Blog Schema
 const blogSchema = new mongoose.Schema({
     newTitle: {
@@ -135,35 +145,35 @@ app.post("/api/blogs", verifyFirebaseToken, verifyAdmin, async (req, res) => {
 
 // Update a blog - Admin only
 app.put("/api/blogs/:id", verifyFirebaseToken, verifyAdmin, async (req, res) => {
-  try {
-    const { newTitle, newContent, imageUrl } = req.body;
+    try {
+        const { newTitle, newContent, imageUrl } = req.body;
 
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      {
-        newTitle,
-        newContent,
-        imageUrl
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+        const updatedBlog = await Blog.findByIdAndUpdate(
+            req.params.id,
+            {
+                newTitle,
+                newContent,
+                imageUrl
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
 
-    if (!updatedBlog) {
-      return res.status(404).json({
-        message: "Blog not found."
-      });
+        if (!updatedBlog) {
+            return res.status(404).json({
+                message: "Blog not found."
+            });
+        }
+
+        res.json(updatedBlog);
+
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        });
     }
-
-    res.json(updatedBlog);
-
-  } catch (err) {
-    res.status(400).json({
-      message: err.message
-    });
-  }
 });
 
 // Delete a blog - Admin only
@@ -180,6 +190,7 @@ app.delete("/api/blogs/:id", verifyFirebaseToken, verifyAdmin, async (req, res) 
         res.json({
             message: "Blog deleted successfully."
         });
+
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -201,12 +212,13 @@ app.patch("/api/blogs/like/:id", async (req, res) => {
         }
 
         res.json(updatedBlog);
+
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// Start server after database connection
+// Start server after MongoDB connection
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URI)
