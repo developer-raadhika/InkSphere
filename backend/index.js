@@ -7,20 +7,19 @@ const cors = require("cors");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 
-const serviceAccount = require("./config/serviceAccountKey.json");
+const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    : require("./config/serviceAccountKey.json");
 
 initializeApp({
     credential: cert(serviceAccount)
 });
-
-const app = express();
-
 app.use(cors({
-    origin: "http://localhost:3000"
+    origin: [
+        "http://localhost:3000",
+        process.env.FRONTEND_URL
+    ].filter(Boolean)
 }));
-
-app.use(express.json());
-
 // MongoDB Blog Schema
 const blogSchema = new mongoose.Schema({
     newTitle: {
