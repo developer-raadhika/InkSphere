@@ -19,7 +19,7 @@ function Navbar() {
                     const token = await currentUser.getIdToken();
 
                     const response = await fetch(
-                        "http://localhost:5000/api/admin/check",
+                        "https://inksphere-backend-1h2f.onrender.com/api/admin/check",
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`

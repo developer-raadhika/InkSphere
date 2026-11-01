@@ -27,7 +27,7 @@ function BlogDetails() {
         setLoading(true);
 
         const response = await axios.get(
-          "http://localhost:5000/api/blogs"
+          "https://inksphere-backend-1h2f.onrender.com/api/blogs"
         );
 
         const blogs = Array.isArray(response.data)

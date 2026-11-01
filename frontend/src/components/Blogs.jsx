@@ -33,7 +33,7 @@ function Blogs() {
       setError("");
 
       const response = await axios.get(
-        "http://localhost:5000/api/blogs"
+        "https://inksphere-backend-1h2f.onrender.com/api/blogs"
       );
 
       const blogData = Array.isArray(response.data)
@@ -60,7 +60,7 @@ function Blogs() {
           const token = await currentUser.getIdToken();
 
           const response = await axios.get(
-            "http://localhost:5000/api/admin/check",
+            "https://inksphere-backend-1h2f.onrender.com/api/admin/check",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ function Blogs() {
   const handleLike = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/blogs/like/${id}`
+        `https://inksphere-backend-1h2f.onrender.com/api/blogs/like/${id}`
       );
 
       fetchBlogs();
@@ -116,7 +116,7 @@ function Blogs() {
       const token = await user.getIdToken();
 
       await axios.post(
-        "http://localhost:5000/api/blogs",
+        "https://inksphere-backend-1h2f.onrender.com/api/blogs",
         {
           newTitle,
           newContent,
@@ -178,7 +178,7 @@ function Blogs() {
       const token = await user.getIdToken();
 
       await axios.put(
-        `http://localhost:5000/api/blogs/${editingId}`,
+        `https://inksphere-backend-1h2f.onrender.com/api/blogs/${editingId}`,
         {
           newTitle: editTitle,
           newContent: editContent,
@@ -233,7 +233,7 @@ function Blogs() {
       const token = await user.getIdToken();
 
       await axios.delete(
-        `http://localhost:5000/api/blogs/${id}`,
+        `https://inksphere-backend-1h2f.onrender.com/api/blogs/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

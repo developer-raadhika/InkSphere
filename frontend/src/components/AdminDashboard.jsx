@@ -4,7 +4,7 @@ import axios from "axios";
 import { auth } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-const API = "http://localhost:5000/api";
+const API = "https://inksphere-backend-1h2f.onrender.com/api";
 
 function AdminDashboard() {
     const [authorized, setAuthorized] = useState(false);

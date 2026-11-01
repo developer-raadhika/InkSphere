@@ -20,7 +20,7 @@ function Home() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/blogs");
+                const response = await fetch("https://inksphere-backend-1h2f.onrender.com/api/blogs");
 
                 if (!response.ok) {
                     throw new Error("Unable to load blogs.");
